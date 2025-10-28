@@ -22,10 +22,11 @@
                 AcceptsReturn="True" 
                 AcceptsTab="True"
                 VerticalScrollBarVisibility="Auto"
-                HorizontalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled"
                 Padding="0,0,0,0"
                 FontFamily="Consolas"
-                FontSize="11pt">
+                FontSize="11pt"
+                TextWrapping="Wrap">
                 <syntax:SyntaxBox.SyntaxDrivers>
                     <syntax:SyntaxConfig>
                         <!-- Keywords -->

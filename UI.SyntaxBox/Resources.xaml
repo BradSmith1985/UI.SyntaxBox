@@ -39,10 +39,10 @@
                 <Setter Property="Opacity" TargetName="border" Value="0.56"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HighlightBrushKey}}"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="#FF569DE5"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HotTrackBrushKey}}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -61,10 +61,10 @@
                 <Setter Property="Opacity" TargetName="border" Value="0.56"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HighlightBrushKey}}"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="#FF569DE5"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HotTrackBrushKey}}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

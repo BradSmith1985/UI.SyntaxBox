@@ -119,6 +119,8 @@ namespace UI.SyntaxBox
                 {
                     prevLine = this[currentLine].Text.Length;
                     this[currentLine + 1].Text = this[currentLine].Text + this[currentLine + 1].Text;
+                    this[currentLine + 1].LineFormatInstructions = null;
+                    this[currentLine + 1].BlockFormatInstructions = null;
                     this[currentLine].Text = String.Empty;
                 }
                 else

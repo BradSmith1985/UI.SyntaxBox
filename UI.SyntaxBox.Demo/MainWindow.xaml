@@ -55,6 +55,24 @@
                         <!-- Multiline comment -->
                         <syntax:RegexRule Op="Block" Foreground="Green" Pattern="(?m)/\*[^*]*\*+(?:[^\/*][^*]*\*+)*/" />
 
+                        <syntax:RegexRule Op="Line" Pattern="(?&lt;!Func1|Func2|Func3)\(.+?\)">
+                            <syntax:RegexRule.TextDecorations>
+                                <TextDecoration>
+                                    <TextDecoration.Pen>
+                                        <Pen Thickness="4">
+                                            <Pen.Brush>
+                                                <VisualBrush Viewbox="0,0,2,5" ViewboxUnits="Absolute" Viewport="0,0,2,5" ViewportUnits="Absolute" TileMode="FlipX">
+                                                    <VisualBrush.Visual>
+                                                        <Line X1="0" Y1="2" X2="2" Y2="4" Stroke="Red" StrokeThickness="1" RenderOptions.EdgeMode="Aliased" />
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
+                                            </Pen.Brush>
+                                        </Pen>
+                                    </TextDecoration.Pen>
+                                </TextDecoration>
+                            </syntax:RegexRule.TextDecorations>
+                        </syntax:RegexRule>
+                        
                     </syntax:SyntaxConfig>
                 </syntax:SyntaxBox.SyntaxDrivers>
                 

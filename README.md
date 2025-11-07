@@ -1,10 +1,10 @@
 # UI.SyntaxBox
 Provides a mechanism for attaching syntax highlighting to a WPF TextBox. Forked from [FLindqvist's repository of the same name](https://github.com/FLindqvist/UI.SyntaxBox). 
 
-The SyntaxBox behavior attaches syntax highlighting capabilities to an existing .NET 8 WPF TextBox.
-It supports two distinct rule types for syntax syntax recognition, RegexRule and a much faster, custom KeywordRule based on the Aho-Corasick algorithm, all configured directly in XAML.
+The `SyntaxBox` behavior attaches syntax highlighting capabilities to an existing .NET 8 WPF `TextBox`.
+It supports two distinct rule types for syntax syntax recognition, `RegexRule` and a much faster, custom `KeywordRule` based on the Aho-Corasick algorithm, all configured directly in XAML.
 
-Here an example of using the SyntaxBox for syntax highlighting ofsomething approximating C# code:
+Here an example of using the `SyntaxBox` for syntax highlighting ofsomething approximating C# code:
 
 ```xaml
 // xmlns:syntax="clr-namespace:UI.SyntaxBox;assembly=UI.SyntaxBox"

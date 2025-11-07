@@ -9,11 +9,10 @@ using System.Windows;
 using System.ComponentModel;
 using System.Globalization;
 
-/// <summary>
-/// This file contains all classes related to KeySequence*.
-/// KeySequence implements multi-key shortcuts, like Ctrl+K, Ctrl+C
-/// int VS. 
-/// </summary>
+// This file contains all classes related to KeySequence*.
+// KeySequence implements multi-key shortcuts, like Ctrl+K, Ctrl+C
+// int VS. 
+
 namespace UI.SyntaxBox
 {
     // ###################################################################
@@ -21,16 +20,16 @@ namespace UI.SyntaxBox
     /// Entry point to create a multi-key binding sequence. Simply 
     /// introduces a new type converter for the Gesture property, to  parse
     /// sequences on the form Modifier+Key1, Key2, ..., KeyN.
-    /// Usage:
-    /// <c>
+    /// </summary>
+    /// <example><![CDATA[
     /// <Window.InputBindings>
     ///     <syntax:KeySequenceBinding Gesture="Ctrl+A, B" Command="..." />
     ///     <syntax:KeySequenceBinding Gesture="Ctrl+A, C" Command="..." />
     /// </Window.InputBindings>
-    /// </c>
-    /// </summary>
+    /// ]]></example>
     public class KeySequenceBinding : InputBinding
     {
+        /// <inheritdoc />
         [TypeConverter(typeof(KeySequenceConverter))]
         public override InputGesture Gesture
         {
@@ -47,7 +46,7 @@ namespace UI.SyntaxBox
     {
         ModifierKeys _modifiers;
         IList<Key> _keys;
-        public int _pointer = 0;
+        internal int _pointer = 0;
 
         #region Constructors
         // ...................................................................

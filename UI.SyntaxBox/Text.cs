@@ -23,7 +23,7 @@ namespace UI.SyntaxBox
         /// <param name="Text">The text to inspect.</param>
         /// <param name="Position"></param>
         /// <returns>A TextLine or null.</returns>
-        public static TextLine GetLineAtPosition(this string Text, int Position)
+        internal static TextLine? GetLineAtPosition(this string Text, int Position)
         {
             if (Text == null || Position < 0 || Position > Text.Length)
                 return (null);
@@ -57,12 +57,7 @@ namespace UI.SyntaxBox
             if (end < 0)
                 end = Text.Length;
 
-            TextLine line = new TextLine
-            {
-                Text = Text.Substring(start, end - start),
-                StartIndex = start,
-                LineNumber = -1
-            };
+            TextLine line = new TextLine(-1, start, Text.Substring(start, end - start));
 
             return (line);
         }
@@ -75,6 +70,7 @@ namespace UI.SyntaxBox
         /// <param name="Text">The text to parse.</param>
         /// <param name="First">The first line to include in the chunk.</param>
         /// <param name="Last">The last line to include in the chunk.</param>
+        /// <param name="TotalLines"></param>
         /// <returns></returns>
         public static List<TextLine> GetLines(this string Text, int First, int Last, out int TotalLines)
         {
@@ -91,12 +87,7 @@ namespace UI.SyntaxBox
                 {
                     if (foundNewlines >= First && foundNewlines <= Last)
                     {
-                        TextLine line = new TextLine
-                        {
-                            Text = Text.Substring(start, i +1 - start),
-                            StartIndex = start,
-                            LineNumber = foundNewlines
-                        };
+                        TextLine line = new TextLine(foundNewlines, start, Text.Substring(start, i + 1 - start));
                         lines.Add(line);
                     }
 
@@ -106,12 +97,7 @@ namespace UI.SyntaxBox
             }
             if (start <= Text.Length && foundNewlines >= First && foundNewlines <= Last)
             {
-                TextLine tailLine = new TextLine
-                {
-                    Text = Text.Substring(start),
-                    StartIndex = start,
-                    LineNumber = foundNewlines
-                };
+                TextLine tailLine = new TextLine(foundNewlines, start, Text.Substring(start));
                 lines.Add(tailLine);
             }
             TotalLines = foundNewlines + 1;
@@ -127,8 +113,9 @@ namespace UI.SyntaxBox
         /// <param name="Text">The text to parse.</param>
         /// <param name="First">The first line to include in the chunk.</param>
         /// <param name="Last">The last line to include in the chunk.</param>
+        /// <param name="TotalLines"></param>
         /// <returns></returns>
-        public static List<TextLine> GetLines2(this string Text, int First, int Last, out int TotalLines)
+        internal static List<TextLine> GetLines2(this string Text, int First, int Last, out int TotalLines)
         {
             string nlstr = Environment.NewLine;
             int nlen = nlstr.Length;
@@ -146,12 +133,7 @@ namespace UI.SyntaxBox
             {
                 if (foundNewlines >= First && foundNewlines <= Last)
                 {
-                    TextLine line = new TextLine
-                    {
-                        Text = Text.Substring(start, nwln.Position + nwln.Length - start),
-                        StartIndex = start,
-                        LineNumber = foundNewlines
-                    };
+                    TextLine line = new TextLine(foundNewlines, start, Text.Substring(start, nwln.Position + nwln.Length - start));
                     lines.Add(line);
                 }
 
@@ -161,12 +143,7 @@ namespace UI.SyntaxBox
 
             if (start <= Text.Length && foundNewlines >= First && foundNewlines <= Last)
             {
-                TextLine tailLine = new TextLine
-                {
-                    Text = Text.Substring(start),
-                    StartIndex = start,
-                    LineNumber = foundNewlines
-                };
+                TextLine tailLine = new TextLine(foundNewlines, start, Text.Substring(start));
                 lines.Add(tailLine);
             }
             TotalLines = foundNewlines + 1;
@@ -182,7 +159,7 @@ namespace UI.SyntaxBox
         /// <param name="Text">The text to inspect</param>
         /// <param name="Position">The a position in Text pointing at a word character.</param>
         /// <returns></returns>
-        public static bool IsStartWordBoundary(this string Text, int Position)
+        internal static bool IsStartWordBoundary(this string Text, int Position)
         {
             if (Text is null)
             {
@@ -206,7 +183,7 @@ namespace UI.SyntaxBox
         /// <param name="Text">The text to inspect</param>
         /// <param name="Position">The a position in Text pointing at a word character.</param>
         /// <returns></returns>
-        public static bool IsEndWordBoundary(this string Text, int Position)
+        internal static bool IsEndWordBoundary(this string Text, int Position)
         {
             if (Text is null)
             {
@@ -221,7 +198,7 @@ namespace UI.SyntaxBox
                 !Char.IsLetterOrDigit(Text, Position + 1) && Text[Position + 1] != '_');
         }
         // ...................................................................
-        public static void AddRange(this HashSet<int> Target, IEnumerable<int> Items)
+        internal static void AddRange(this HashSet<int> Target, IEnumerable<int> Items)
         {
             foreach (var item in Items)
                 Target.Add(item);

@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace UI.SyntaxBox {
 
-    public class SyntaxRenderer : FrameworkElement {
+    internal class SyntaxRenderer : FrameworkElement {
 
         [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "GetLineHeight")]
         static extern double GetLineHeightMethod(TextBox @this);
@@ -21,6 +21,7 @@ namespace UI.SyntaxBox {
         private const int LN_MARGIN = 10;
         private const char INDENT_CHAR = ' ';
         private const int BLOCK_EXTEND = 200;
+        private const int HORIZ_PADDING = 4;
         private ScrollViewer _scrollViewer;
         private Canvas _lineNumbers;
         private Brush _defaultFg, _lineNumbersFg;
@@ -32,6 +33,18 @@ namespace UI.SyntaxBox {
 #endif
         private LineBuffer _lineBuffer = new LineBuffer();
         private ReadOnlyCollection<FormatInstruction> _noBlockInstr = new List<FormatInstruction>(0).AsReadOnly();
+
+        /// <summary>
+        /// Forces the driver logic to be re-applied to all text.
+        /// </summary>
+        internal void InvalidateDriver() {
+            foreach (var line in this._lineBuffer) {
+                line.BlockFormatInstructions = null;
+                line.LineFormatInstructions = null;
+            }
+
+            this.InvalidateVisual();
+        }
 
         #region Dependency properties
         // ...................................................................
@@ -86,7 +99,7 @@ namespace UI.SyntaxBox {
             Canvas lineNumbers = this.GetLineNumbersCanvas();
             Size scrollBarSize = this.GetScrollBarSizes();
             double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
-            double maxTextWidth = this.ActualWidth - scrollBarSize.Width - 4;
+            double maxTextWidth = this.ActualWidth - scrollBarSize.Width - HORIZ_PADDING;
 
             Brush synForeground = this._defaultFg ?? Brushes.Red;
             Brush lnForeground = this._lineNumbersFg ?? Brushes.Brown;
@@ -103,7 +116,7 @@ namespace UI.SyntaxBox {
             // otherwise save the current value as original foreground and reset 
             // it to transparent.
             if (this.Target.Foreground != Brushes.Transparent) {
-                this.Target.SetValue(SyntaxBox.OriginalForegroundProperty, this.Target.Foreground);
+                SyntaxBox.SetOriginalForeground(this.Target, this.Target.Foreground);
                 this.Target.Foreground = Brushes.Transparent;
             }
 
@@ -198,8 +211,8 @@ namespace UI.SyntaxBox {
             if (requiredWidth > 0) {
                 // Set a drawing clip to match the line numbers part.
                 Rect numbersRect = new Rect(
-                    new Point(-requiredWidth, 0),
-                    new Size(requiredWidth, this.ActualHeight - this.Target.Padding.Bottom - scrollBarSize.Height)
+                    new Point(-(requiredWidth + this.Target.Padding.Left), 0),
+                    new Size(requiredWidth + this.Target.Padding.Left, Math.Max(this.ActualHeight - scrollBarSize.Height, 0))
                 );
                 drawingContext.PushClip(new RectangleGeometry(numbersRect));
 
@@ -217,7 +230,8 @@ namespace UI.SyntaxBox {
                         TextOptions.GetTextFormattingMode(this),
                         pixelsPerDip) {
                         LineHeight = lineHeight,
-                        TextAlignment = TextAlignment.Right
+                        TextAlignment = TextAlignment.Right,
+                        Trimming = TextTrimming.None
                     };
 
                     // Draw the line numbers. Since the text is right-aligned,
@@ -225,7 +239,7 @@ namespace UI.SyntaxBox {
                     drawingContext.DrawText(
                         numbersText,
                         new Point(
-                            -LN_MARGIN,
+                            -(LN_MARGIN + this.Target.Padding.Left),
                             lineOffset - this.Target.VerticalOffset)
                     );
                 }
@@ -244,7 +258,8 @@ namespace UI.SyntaxBox {
                             TextOptions.GetTextFormattingMode(this),
                             pixelsPerDip) {
                             LineHeight = lineHeight,
-                            MaxTextWidth = maxTextWidth
+                            MaxTextWidth = maxTextWidth,
+                            Trimming = TextTrimming.None
                         };
 
                         FormattedText numbersText = new FormattedText((line.LineNumber + 1).ToString(),
@@ -257,7 +272,8 @@ namespace UI.SyntaxBox {
                             TextOptions.GetTextFormattingMode(this),
                             pixelsPerDip) {
                             LineHeight = lineHeight,
-                            TextAlignment = TextAlignment.Right
+                            TextAlignment = TextAlignment.Right,
+                            Trimming = TextTrimming.None
                         };
 
                         // Draw the line numbers. Since the text is right-aligned,
@@ -265,7 +281,7 @@ namespace UI.SyntaxBox {
                         drawingContext.DrawText(
                             numbersText,
                             new Point(
-                                -LN_MARGIN,
+                                -(LN_MARGIN + this.Target.Padding.Left),
                                 (lineOffset - this.Target.VerticalOffset) + numberOffset)
                         );
 
@@ -279,8 +295,8 @@ namespace UI.SyntaxBox {
             // Draw the syntax text.
             // Set a drawing clip matching the renderer size, sans the scrollbars.
             Rect clipRect = new Rect(
-                new Size(this.ActualWidth - this.Target.Padding.Right - scrollBarSize.Width,
-                this.ActualHeight - this.Target.Padding.Bottom - scrollBarSize.Height)
+                new Size(this.ActualWidth - scrollBarSize.Width,
+                Math.Max(this.ActualHeight - scrollBarSize.Height, 0))
             );
             drawingContext.PushClip(new RectangleGeometry(clipRect));
 
@@ -295,7 +311,8 @@ namespace UI.SyntaxBox {
                 numberSubstitution: null,
                 TextOptions.GetTextFormattingMode(this),
                 pixelsPerDip) {
-                LineHeight = lineHeight
+                LineHeight = lineHeight,
+                Trimming = TextTrimming.None
             };
 
             if (this.Target.TextWrapping != TextWrapping.NoWrap) {
@@ -338,14 +355,15 @@ namespace UI.SyntaxBox {
                         // Convert to line instructions
                         .Select((x) => new {
                             lineno = x.line.LineNumber,
-                            instruction = new FormatInstruction {
-                                RuleId = x.instr.RuleId,
-                                Foreground = x.instr.Foreground,
-                                Background = x.instr.Background,
-                                Outline = x.instr.Outline,
-                                FromChar = Math.Max(0, x.instrStart - x.line.StartIndex),
-                                Length = Math.Min(x.instrEnd - x.line.StartIndex, x.line.Text.Length) - Math.Max(0, x.instrStart - x.line.StartIndex)
-                            }
+                            instruction = new FormatInstruction(
+                                x.instr.RuleId,
+                                Math.Max(0, x.instrStart - x.line.StartIndex),
+                                Math.Min(x.instrEnd - x.line.StartIndex, x.line.Text.Length) - Math.Max(0, x.instrStart - x.line.StartIndex),
+                                x.instr.Background,
+                                x.instr.Foreground,
+                                x.instr.Outline,
+                                x.instr.TextDecorations
+                            )
                         }
                         )
                         .GroupBy((x) => x.lineno, (x) => x.instruction)
@@ -379,7 +397,6 @@ namespace UI.SyntaxBox {
                     lineInstructions.Sort((a, b) => a.RuleId.CompareTo(b.RuleId));
                     foreach (var instruction in lineInstructions) {
                         if (instruction.Foreground != null) {
-
                             syntaxText.SetForegroundBrush(
                                 instruction.Foreground,
                                 instruction.FromChar + localOffset,
@@ -399,6 +416,12 @@ namespace UI.SyntaxBox {
                                 2d - this.Target.HorizontalOffset,
                                 (line.LineNumber) * lineHeight - this.Target.VerticalOffset);
                             drawingContext.DrawRectangle(instruction.Background, instruction.Outline, highlight);
+                        }
+                        if (instruction.TextDecorations != null) {
+                            syntaxText.SetTextDecorations(
+                                instruction.TextDecorations,
+                                instruction.FromChar + localOffset,
+                                instruction.Length);
                         }
                     }
                 }
@@ -460,7 +483,9 @@ namespace UI.SyntaxBox {
                     Brushes.Black,
                     numberSubstitution: null,
                     TextOptions.GetTextFormattingMode(this),
-                    PixelsPerDip);
+                    PixelsPerDip) {
+                    Trimming = TextTrimming.None
+                };
                 left = prefix.WidthIncludingTrailingWhitespace;
             }
             FormattedText highlight = new FormattedText(
@@ -472,7 +497,9 @@ namespace UI.SyntaxBox {
                     Brushes.Black,
                     numberSubstitution: null,
                     TextOptions.GetTextFormattingMode(this),
-                    PixelsPerDip);
+                    PixelsPerDip) {
+                    Trimming = TextTrimming.None 
+            };
             width = highlight.Width;
             return (new Rect(
                 new Point(left - 1, 0d),
@@ -505,7 +532,9 @@ namespace UI.SyntaxBox {
                     Brushes.Black,
                     numberSubstitution: null,
                     TextOptions.GetTextFormattingMode(this),
-                    PixelsPerDip);
+                    PixelsPerDip) {
+                    Trimming = TextTrimming.None
+                };
                 this._numWidth = requiredText.Width + LN_MARGIN * 2;
             }
 
@@ -685,10 +714,10 @@ namespace UI.SyntaxBox {
             int indentCount = SyntaxBox.GetIndentCount(this.Target);
             int caretIndex = this.Target.CaretIndex;
             // Decrease indent
-            TextLine line = this.Target.Text.GetLineAtPosition(caretIndex);
+            TextLine? line = this.Target.Text.GetLineAtPosition(caretIndex);
             if (line != null) {
                 int currentIndent;
-                for (currentIndent = 0; (caretIndex - currentIndent) > line.StartIndex; currentIndent++) {
+                for (currentIndent = 0; (caretIndex - currentIndent) > line.Value.StartIndex; currentIndent++) {
                     if (this.Target.Text[caretIndex - currentIndent - 1] != INDENT_CHAR)
                         break;
                 }
@@ -712,10 +741,10 @@ namespace UI.SyntaxBox {
         private void IncreaseCaretIndent() {
             int indentCount = SyntaxBox.GetIndentCount(this.Target);
             int caretIndex = this.Target.CaretIndex;
-            TextLine line = this.Target.Text.GetLineAtPosition(caretIndex);
+            TextLine? line = this.Target.Text.GetLineAtPosition(caretIndex);
             if (line != null) {
                 int currentIndent;
-                for (currentIndent = 0; (caretIndex - currentIndent) > line.StartIndex; currentIndent++) {
+                for (currentIndent = 0; (caretIndex - currentIndent) > line.Value.StartIndex; currentIndent++) {
                     if (this.Target.Text[caretIndex - currentIndent - 1] != INDENT_CHAR)
                         break;
                 }
@@ -835,15 +864,15 @@ namespace UI.SyntaxBox {
             }
             else if (e.Key == System.Windows.Input.Key.Enter) {
                 if (SyntaxBox.GetAutoIndent(this.Target)) {
-                    TextLine line = this.Target.Text.GetLineAtPosition(this.Target.CaretIndex);
+                    TextLine? line = this.Target.Text.GetLineAtPosition(this.Target.CaretIndex);
                     if (line != null) {
                         int len;
-                        for (len = 0; len < line.Text.Length; len++) {
-                            char c = line.Text[len];
+                        for (len = 0; len < line.Value.Text.Length; len++) {
+                            char c = line.Value.Text[len];
                             if (!(Char.IsWhiteSpace(c) && c != '\n' && c != '\r'))
                                 break;
                         }
-                        string prefix = line.Text.Substring(0, len);
+                        string prefix = line.Value.Text.Substring(0, len);
                         System.Windows.Documents.EditingCommands.EnterLineBreak.Execute(null, this.Target);
                         TextCompositionManager.StartComposition(
                                 new TextComposition(

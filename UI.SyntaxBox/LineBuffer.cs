@@ -11,7 +11,7 @@ namespace UI.SyntaxBox
     /// The buffer allows caching of syntax highlighting instructions for better
     /// performance.
     /// </summary>
-    public class LineBuffer : List<FormattedLine>
+    internal class LineBuffer : List<FormattedLine>
     {
         #region Constructors
         // ...................................................................

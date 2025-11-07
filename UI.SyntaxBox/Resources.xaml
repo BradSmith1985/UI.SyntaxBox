@@ -1,6 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:UI.SyntaxBox">
+    <!-- Resources which can be overridden to match the destination theme -->
+    <Brush x:Key="UI.SyntaxBox.Border.MouseOver">#FF7EB4EA</Brush>
+    <Brush x:Key="UI.SyntaxBox.Border.KeyboardFocused">#FF569DE5</Brush>
+    
     <!-- Control template applied to any textbox with attached syntax highlighting -->
     <ControlTemplate 
         x:Key="SyntaxTextBoxTemplate"
@@ -23,6 +27,7 @@
                 <Grid Grid.Column="1">
                     <Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
                         <local:SyntaxRenderer 
+                            x:Name="PART_SyntaxRenderer"
                             Target="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                             TextOptions.TextRenderingMode="ClearType" 
                             TextOptions.TextFormattingMode="Display"
@@ -39,10 +44,10 @@
                 <Setter Property="Opacity" TargetName="border" Value="0.56"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HighlightBrushKey}}"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource UI.SyntaxBox.Border.MouseOver}"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HotTrackBrushKey}}"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource UI.SyntaxBox.Border.KeyboardFocused}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -61,10 +66,10 @@
                 <Setter Property="Opacity" TargetName="border" Value="0.56"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HighlightBrushKey}}"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource UI.SyntaxBox.Border.MouseOver}"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.HotTrackBrushKey}}"/>
+                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource UI.SyntaxBox.Border.KeyboardFocused}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

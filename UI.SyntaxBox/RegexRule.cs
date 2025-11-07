@@ -4,16 +4,21 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Media;
 
 namespace UI.SyntaxBox
 {
+    /// <summary>
+    /// Syntax rule that uses a regular expression pattern.
+    /// </summary>
     public class RegexRule : ISyntaxRule
     {
         private Regex _regex = null;
 
         #region ISyntaxRule members
         // ...................................................................
+        /// <inheritdoc />
         public int RuleId { get; set; }
         // ...................................................................
         /// <summary>
@@ -34,15 +39,15 @@ namespace UI.SyntaxBox
 
             foreach (Match match in matches)
             {
-                yield return (new FormatInstruction
-                {
-                    RuleId = this.RuleId,
-                    FromChar = match.Index,
-                    Length = match.Length,
-                    Foreground = Foreground,
-                    Background = Background,
-                    Outline = Outline
-                });
+                yield return (new FormatInstruction(
+                    this.RuleId,
+                    match.Index,
+                    match.Length,
+                    this.Background,
+                    this.Foreground,
+                    this.Outline,
+                    this.TextDecorations
+                ));
             }
         }
         // ...................................................................
@@ -64,6 +69,10 @@ namespace UI.SyntaxBox
         /// Outline pen
         /// </summary>
         public Pen Outline { get; set; }
+        /// <summary>
+        /// Decorations
+        /// </summary>
+        public TextDecorationCollection TextDecorations { get; set; }
         // ...................................................................
         /// <summary>
         /// The regex pattern to match.

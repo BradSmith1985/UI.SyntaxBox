@@ -1,7 +1,7 @@
 # UI.SyntaxBox
-Attach syntax highlighting to a WPF TextBox.
+Provides a mechanism for attaching syntax highlighting to a WPF TextBox. Forked from [FLindqvist's repository of the same name](https://github.com/FLindqvist/UI.SyntaxBox). 
 
-The SyntaxBox behavior attaches syntax highlighting capabilities to an existing .NET Framework WPF TextBox.
+The SyntaxBox behavior attaches syntax highlighting capabilities to an existing .NET 8 WPF TextBox.
 It supports two distinct rule types for syntax syntax recognition, RegexRule and a much faster, custom KeywordRule based on the Aho-Corasick algorithm, all configured directly in XAML.
 
 Here an example of using the SyntaxBox for syntax highlighting ofsomething approximating C# code:
@@ -56,3 +56,35 @@ Here an example of using the SyntaxBox for syntax highlighting ofsomething appro
         </syntax:SyntaxConfig>
     </syntax:SyntaxBox.SyntaxDrivers>
 </TextBox>
+```
+## Text Wrapping
+This fork adds support for text wrapping, which did not work correctly in the original repo.
+
+Change the following to enable wrapping:
+
+```xaml
+<TextBox HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" />
+```
+
+## TextDecoration Support
+Syntax rules can now include text decorations (e.g. underlining). Useful for showing syntax errors.
+
+Example (underlines the keyword 'Invalid'):
+
+```xaml
+<syntax:RegexRule Op="Line" Pattern="\bInvalid\b">
+    <syntax:RegexRule.TextDecorations>
+        <TextDecoration>
+            <TextDecoration.Pen>
+                <Pen Thickness="2" Brush="Red" />
+            </TextDecoration.Pen>
+        </TextDecoration>
+    </syntax:RegexRule.TextDecorations>
+</syntax:RegexRule>
+```
+
+## .NET 8 Support
+This fork has been updated for .NET 8 and modern versions of Visual Studio:
+* Migrated to SDK-style projects
+* Changed some classes to readonly structs to limit allocations
+* Updated calls to deprecated WPF APIs

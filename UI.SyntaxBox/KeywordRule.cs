@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace UI.SyntaxBox
@@ -41,7 +43,7 @@ namespace UI.SyntaxBox
                     this.Background,
                     this.Foreground,
                     this.Outline,
-                    this.TextDecorations
+                    (this.TextDecorations.Count > 0) ? this.TextDecorations : null
                 )).ToList();
             return (instructions);
                 
@@ -82,6 +84,13 @@ namespace UI.SyntaxBox
         /// The default is <see langword="true"/>.
         /// </remarks>
         public bool WholeWordsOnly { get; set; } = true;
+        // ...................................................................
+        /// <summary>
+        /// Initialises a new instance of the <see cref="KeywordRule"/> class using default values.
+        /// </summary>
+        public KeywordRule() {
+            TextDecorations = new TextDecorationCollection();
+        }
         // ...................................................................
         #endregion
 

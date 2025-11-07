@@ -11,9 +11,10 @@
 using System;
 using System.Reflection;
 
+[assembly: System.Reflection.AssemblyCompanyAttribute("UI.SyntaxBox.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed65c68bb11c0cdd341781f6b9b150456e2907f9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03d2fb866718bc6b7741e9539b96b0ed0f6bf3f9")]
 [assembly: System.Reflection.AssemblyProductAttribute("UI.SyntaxBox.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UI.SyntaxBox.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

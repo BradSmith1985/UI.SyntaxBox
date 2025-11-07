@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace UI.SyntaxBox
@@ -46,7 +48,7 @@ namespace UI.SyntaxBox
                     this.Background,
                     this.Foreground,
                     this.Outline,
-                    this.TextDecorations
+                    (this.TextDecorations.Count > 0) ? this.TextDecorations : null
                 ));
             }
         }
@@ -78,6 +80,13 @@ namespace UI.SyntaxBox
         /// The regex pattern to match.
         /// </summary>
         public string Pattern { get; set; }
+        // ...................................................................
+        /// <summary>
+        /// Initialises a new instance of the <see cref="RegexRule"/> class using default values.
+        /// </summary>
+        public RegexRule() {
+            TextDecorations = new TextDecorationCollection();
+        }
         // ...................................................................
         #endregion
 

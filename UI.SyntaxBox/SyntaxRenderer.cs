@@ -140,10 +140,10 @@ namespace UI.SyntaxBox {
                 int lastLineCharIndex = (textLength > 0) ? this.Target.GetCharacterIndexFromPoint(this.GetScrollViewer().TranslatePoint(new Point(0,this.ActualHeight), this.Target), snapToText: true) : -1;
                 
                 int previousLineCharIndex = -1;
-                if ((textLength > 0) && (firstLineCharIndex >= 0)) previousLineCharIndex = this.Target.Text.AsSpan(0, firstLineCharIndex + 1).LastIndexOf(Environment.NewLine);
+                if ((textLength > 0) && (firstLineCharIndex >= 0)) previousLineCharIndex = this.Target.Text.AsSpan(0, Math.Min(firstLineCharIndex + 1, textLength)).LastIndexOf(Environment.NewLine);
 
-                firstVisible = ((textLength > 0) && (firstLineCharIndex >= 0)) ? this.Target.Text.AsSpan(0, firstLineCharIndex + 1).Count(Environment.NewLine) : 0;
-                lastVisible = ((textLength > 0) && (lastLineCharIndex >= 0)) ? this.Target.Text.AsSpan(0, lastLineCharIndex + 1).Count(Environment.NewLine) : 0;
+                firstVisible = ((textLength > 0) && (firstLineCharIndex >= 0)) ? this.Target.Text.AsSpan(0, Math.Min(firstLineCharIndex + 1, textLength)).Count(Environment.NewLine) : 0;
+                lastVisible = ((textLength > 0) && (lastLineCharIndex >= 0)) ? this.Target.Text.AsSpan(0, Math.Min(lastLineCharIndex + 1, textLength)).Count(Environment.NewLine) : 0;
                 lineOffset = ((previousLineCharIndex >= 0) ? this.Target.GetLineIndexFromCharacterIndex(previousLineCharIndex) + 1 : 0) * lineHeight;
             }
 

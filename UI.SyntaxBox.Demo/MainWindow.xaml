@@ -29,6 +29,17 @@
                 FontSize="11pt">
                 <syntax:SyntaxBox.SyntaxDrivers>
                     <syntax:SyntaxConfig>
+
+                        <syntax:RegexRule Op="Line" Pattern="\bInvalid\b">
+                            <syntax:RegexRule.TextDecorations>
+                                <TextDecoration>
+                                    <TextDecoration.Pen>
+                                        <Pen Thickness="2" Brush="Red" />
+                                    </TextDecoration.Pen>
+                                </TextDecoration>
+                            </syntax:RegexRule.TextDecorations>
+                        </syntax:RegexRule>
+
                         <!-- Keywords -->
                         <syntax:KeywordRule Foreground="Blue"
                             Keywords="abstract,as,base,bool,break,byte,case,catch,char,checked,class,const,continue,decimal,default,delegate,do,double,else,enum,event,explicit,extern,false,finally,fixed,float,for,foreach,goto,if,implicit,in,int,interface,internal,is,lock,long,namespace,new,null,object,operator,out,override,params,private,protected,public,readonly,ref,return,sbyte,sealed,short,sizeof,stackalloc,static,string,struct,switch,this,throw,true,try,typeof,uint,ulong,unchecked,unsafe,ushort,using,using,static,virtual,void,volatile,while,get,set,yield,var"
@@ -56,24 +67,6 @@
                         <!-- Multiline comment -->
                         <syntax:RegexRule Op="Block" Foreground="Green" Pattern="(?m)/\*[^*]*\*+(?:[^\/*][^*]*\*+)*/" />
 
-                        <syntax:RegexRule Op="Line" Pattern="(?&lt;!Func1|Func2|Func3)\(.+?\)">
-                            <syntax:RegexRule.TextDecorations>
-                                <TextDecoration>
-                                    <TextDecoration.Pen>
-                                        <Pen Thickness="4">
-                                            <Pen.Brush>
-                                                <VisualBrush Viewbox="0,0,2,5" ViewboxUnits="Absolute" Viewport="0,0,2,5" ViewportUnits="Absolute" TileMode="FlipX">
-                                                    <VisualBrush.Visual>
-                                                        <Line X1="0" Y1="2" X2="2" Y2="4" Stroke="Red" StrokeThickness="1" RenderOptions.EdgeMode="Aliased" />
-                                                    </VisualBrush.Visual>
-                                                </VisualBrush>
-                                            </Pen.Brush>
-                                        </Pen>
-                                    </TextDecoration.Pen>
-                                </TextDecoration>
-                            </syntax:RegexRule.TextDecorations>
-                        </syntax:RegexRule>
-                        
                     </syntax:SyntaxConfig>
                 </syntax:SyntaxBox.SyntaxDrivers>
                 

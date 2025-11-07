@@ -1,0 +1,608 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UI.SyntaxBox</name>
+    </assembly>
+    <members>
+        <member name="T:UI.SyntaxBox.AggregateSyntaxDriver">
+            <summary>
+            Aggregates a driver collection to be used using the singular ISyntaxDriver
+            interface.
+            </summary>
+        </member>
+        <member name="T:UI.SyntaxBox.AhoCorasickSearch">
+            <summary>
+            Canonical algorithm for quickly finding all occurances of muiltiple 
+            keywords in a longer text.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.AhoCorasickSearch.#ctor(System.Collections.Generic.List{System.String},System.Boolean,System.Boolean)">
+            <summary>
+            Creates an Aho-Corasick keyword search automation.
+            </summary>
+            <param name="Dictionary">The list of words t osearch for.</param>
+            <param name="MatchWholeWords">
+            Ensures that matches start and end on a word boundary (alphanumeric or '_').
+            Default = <c>true</c>.
+            </param>
+            <param name="OverlappingMatches">
+            If enabled, overlapping matches are allowed, e.g. elsif => elsif, if.
+            Default = <c>false</c>.
+            </param>
+        </member>
+        <member name="M:UI.SyntaxBox.AhoCorasickSearch.InitiateTables">
+            <summary>
+            Creates and initiates all automation tables
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.AhoCorasickSearch.InitiateAutomation">
+            <summary>
+            Initiates the automation, loading it into the created tables.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.AhoCorasickSearch.NextState(System.Int32,System.Int32)">
+            <summary>
+            Finds the next state based on the current state and the next input 
+            character.
+            </summary>
+            <param name="CurrentState"></param>
+            <param name="InputChar"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.AhoCorasickSearch.FindAll(System.String)">
+            <summary>
+            Scans Text returning all occurances of any keyword in the dictionary.
+            </summary>
+            <param name="Text"></param>
+        </member>
+        <member name="T:UI.SyntaxBox.FormattedLine">
+            <summary>
+            A formatted line of text.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.FormattedLine.Text">
+            <summary>
+            Text of the line. No strictly necessary to maintain,
+            but good for debugging.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.FormattedLine.LineFormatInstructions">
+            <summary>
+            List of formats to apply to the line
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.ISyntaxDriver.Abilities">
+            <summary>
+            Gets or sets the abilities of the driver.
+            </summary>
+            <value>
+            The type of the driver.
+            </value>
+        </member>
+        <member name="M:UI.SyntaxBox.ISyntaxDriver.Match(UI.SyntaxBox.DriverOperation,System.String)">
+            <summary>
+            Applies the driver logic to the supplied text. 
+            This will be called repeatedly 
+            </summary>
+            <param name="Operation">The operation.</param>
+            <param name="Text">The text.</param>
+            <returns></returns>
+        </member>
+        <member name="F:UI.SyntaxBox.DriverOperation.Line">
+            <summary>
+            Matches single lines.
+            </summary>
+        </member>
+        <member name="F:UI.SyntaxBox.DriverOperation.Block">
+            <summary>
+            Matches a block of text/multiline.
+            </summary>
+        </member>
+        <member name="F:UI.SyntaxBox.DriverOperation.FullText">
+            <summary>
+            Matches on the entire text.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:UI.SyntaxBox.KeySequenceBinding" -->
+        <member name="T:UI.SyntaxBox.KeySequenceGesture">
+            <summary>
+            Gesture implementation. Keeps a sequence of keys and advances the 
+            pointer in the sequence if a keystroke matches.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.KeySequenceGesture.#ctor(System.String)">
+            <summary>
+            Ensures that the default constructor cannot be used externally.
+            </summary>
+            <param name="DisplayString"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.KeySequenceGesture.#ctor(System.Windows.Input.ModifierKeys,System.Collections.Generic.IList{System.Windows.Input.Key},System.String)">
+            <summary>
+            Initializing constructor.
+            </summary>
+            <param name="Modifiers">Modifier keys</param>
+            <param name="Keys">List of keys in the sequence</param>
+            <param name="DisplayString">Display string for the sequence</param>
+        </member>
+        <member name="M:UI.SyntaxBox.KeySequenceGesture.Matches(System.Object,System.Windows.Input.InputEventArgs)">
+            <summary>
+            Matches an input event to the current state of the instance.
+            If a match is found, the _pointer is advanced forward in the sequence.
+            Returns true only if the match is made on the LAST element in the 
+            sequence.
+            </summary>
+            <param name="targetElement"></param>
+            <param name="inputEventArgs"></param>
+            <returns></returns>
+        </member>
+        <member name="T:UI.SyntaxBox.KeySequenceConverter">
+            <summary>
+            Converts a string into either a KeyGEsture or a KeySequenceGesture 
+            if multiple keys are specified.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.KeySequenceConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+            Determines whether this instance can convert from the specified sourceType.
+            Can convert from string and nothing else.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="sourceType">Type of the source.</param>
+            <returns>
+              <c>true</c> if this instance [can convert from] the specified context; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:UI.SyntaxBox.KeySequenceConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+            Converts from.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="culture">The culture.</param>
+            <param name="value">The value.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">value</exception>
+            <exception cref="T:System.ArgumentException">Argument must be of string type - value</exception>
+        </member>
+        <member name="T:UI.SyntaxBox.KeywordRule">
+            <summary>
+            This rule is used to match a list of keywords wit input text.
+            It is ~10x faster than using regex for the same purpose.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.KeywordRule.Match(System.String)">
+            <summary>
+            Matches the rule against the provided text.
+            Used internally, shouldn't be called by user code.
+            </summary>
+            <param name="Text"></param>
+            <returns></returns>
+        </member>
+        <member name="P:UI.SyntaxBox.KeywordRule.Background">
+            <summary>
+            Background brush
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.KeywordRule.Foreground">
+            <summary>
+            Foreground brush.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.KeywordRule.Outline">
+            <summary>
+            Outline pen
+            </summary>
+        </member>
+        <member name="T:UI.SyntaxBox.LineBuffer">
+            <summary>
+            A buffer of lines synchronized with TextBox.Text using the TextChanged event.
+            The buffer allows caching of syntax highlighting instructions for better
+            performance.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.LineBuffer.#ctor(System.String)">
+            <summary>
+            Constructor defaulting initial capacity to 1024 lines.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.LineBuffer.#ctor">
+            <summary>
+            Constructor defaulting initial capacity to 1024 lines.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.LineBuffer.ApplyChange(System.Windows.Controls.TextChange,System.String)">
+            <summary>
+            Apples a TextChange as provided by TextChanged event from TextBox.
+            </summary>
+            <param name="Change"></param>
+            <param name="AddedText"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.LineBuffer.ToString">
+            <summary>
+            Overrides ToString returning the all lines as a joined text.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:UI.SyntaxBox.MatchUtils">
+            <summary>
+            Cotnains utility functions for pattern matching in text.
+            </summary>
+        </member>
+        <member name="T:UI.SyntaxBox.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.RegexRule.Op">
+            <summary>
+            The driver operation to apply (Line | Block | FullText).
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.RegexRule.Match(System.String)">
+            <summary>
+            Matches the rule against the provided text.
+            Used internally, shouldn't be called by user code.
+            </summary>
+            <param name="Text"></param>
+            <returns></returns>
+        </member>
+        <member name="P:UI.SyntaxBox.RegexRule.Background">
+            <summary>
+            Background brush
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.RegexRule.Foreground">
+            <summary>
+            Foreground brush.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.RegexRule.Outline">
+            <summary>
+            Outline pen
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.RegexRule.Pattern">
+            <summary>
+            The regex pattern to match.
+            </summary>
+        </member>
+        <member name="T:UI.SyntaxBox.Substring">
+            <summary>
+            A POCO object describing a matched substring.
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.Substring.Position">
+            <summary>
+            The first character in the match
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.Substring.Length">
+            <summary>
+            The length of the matched string
+            </summary>
+        </member>
+        <member name="P:UI.SyntaxBox.Substring.Value">
+            <summary>
+            The matched substring value.
+            </summary>
+        </member>
+        <member name="T:UI.SyntaxBox.SyntaxBox">
+            <summary>
+            Class syntax highlighting behavior that can be attached to any WPF TextBox.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.#cctor">
+            <summary>
+            Static initializer for the <see cref="T:UI.SyntaxBox.SyntaxBox"/> class.
+            Reads the resource dictionary and extracts the control templates.
+            </summary>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.EnabledProperty">
+            <summary>
+            Enables/disables syntax highlighting on any textbox
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.SetEnable(System.Windows.Controls.TextBox,System.Boolean)">
+            <summary>
+            Enable property set accessor
+            </summary>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.GetEnable(System.Windows.Controls.TextBox)">
+            <summary>
+            Enable property get accessor.
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.OnEnableChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Called when Enabled changes.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.Windows.DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.ShowLineNumbersProperty">
+            <summary>
+            Shows/hides the line numbers part.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.SetShowLineNumbers(System.Windows.Controls.TextBox,System.Boolean)">
+            <summary>
+            ShowLineNumbers property set accessor
+            </summary>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.GetShowLineNumbers(System.Windows.Controls.TextBox)">
+            <summary>
+            ShowLineNumbers property get accessor.
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.LineNumbersBackgroundProperty">
+            <summary>
+            The background brush of the line numbers part.
+            </summary>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.LineNumbersForegroundProperty">
+            <summary>
+            The foreground brush of the line numbers part.
+            </summary>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.ExpandTabsProperty">
+            <summary>
+            Enables/disables syntax highlighting tab to space expansion
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.SetExpandTabs(System.Windows.Controls.TextBox,System.Boolean)">
+            <summary>
+            ExpandTabs property set accessor
+            </summary>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.GetExpandTabs(System.Windows.Controls.TextBox)">
+            <summary>
+            ExpandTabs property get accessor.
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.AutoIndentProperty">
+            <summary>
+            Enables/disables auto-indentation.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.SetAutoIndent(System.Windows.Controls.TextBox,System.Boolean)">
+            <summary>
+            AutoIndent property set accessor
+            </summary>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.GetAutoIndent(System.Windows.Controls.TextBox)">
+            <summary>
+            AutoIndent property get accessor.
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="F:UI.SyntaxBox.SyntaxBox.IndentCountProperty">
+            <summary>
+            Gets the number of space characters to indent on Tab expansion.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.SetIndentCount(System.Windows.Controls.TextBox,System.Boolean)">
+            <summary>
+            IndentCount property set accessor
+            </summary>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxBox.GetIndentCount(System.Windows.Controls.TextBox)">
+            <summary>
+            IndentCount property get accessor.
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:UI.SyntaxBox.SyntaxConfig">
+            <summary>
+            Impements a regex-based syntax driver that is configurable directly
+            within XAML.
+            </summary>
+        </member>
+        <member name="T:UI.SyntaxBox.SyntaxDriverCollection">
+            <summary>
+            Collection used to wit attached property SyntaxDrivers.
+            Allows multiple syntax drivers to be declared in XAML.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.OnRender(System.Windows.Media.DrawingContext)">
+            <summary>
+            Renders the visible parts of the syntax text and line numbers 
+            directly to the drawing context.
+            </summary>
+            <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.GetSyntaxDriver">
+            <summary>
+            Gets the configured syntax drivers as an aggregate driver.
+            </summary>
+            <returns>A syntax driver or null</returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.GetSubstringRect(System.String,System.Int32,System.Int32,System.Windows.Media.Typeface,System.Double,System.Windows.FlowDirection,System.Double)">
+            <summary>
+            Calculates a rectangle for highlighting a specific part of a text line.
+            </summary>
+            <param name="Line"></param>
+            <param name="From"></param>
+            <param name="Count"></param>
+            <param name="Typeface"></param>
+            <param name="FontSize"></param>
+            <param name="FlowDirection"></param>
+            <param name="PixelsPerDip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.CalculateRequiredLineNumberWidth(System.Int32,System.Windows.Media.Typeface,System.Double)">
+            <summary>
+            Calculates the required width of the line number canvas.
+            </summary>
+            <param name="LineCount">The line count.</param>
+            <param name="Typeface">The typeface.</param>
+            <param name="PixelsPerDip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.GetScrollViewer">
+            <summary>
+            Gets the scroll viewer part. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.AttachScrollViewer">
+            <summary>
+            Attaches the scroll viewer ScrollChanged event. Since the ScrollViewer
+            isn't created untill after the renderer is initialized, the scroll 
+            viewer events can't be attached by the attahced property. Instead
+            this method has to be called sometime after the initialization process.
+            (OnRender or when the scroll viewer is first used).
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.GetScrollBarSizes">
+            <summary>
+            Gets visible size of the scroll bars as a size. 
+            Width => vertical scroll bar Width,
+            Height => horizontal scroll bar Height.
+            
+            This will return 0 for any dimension that is currently hidden.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.GetLineHeight">
+            <summary>
+            Calls the TextBox.GetLineHeight of Target via reflection.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.DecreaseBlockIndent">
+            <summary>
+            Decreases the indentation of the current text selection.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.IncreaseBlockIndent">
+            <summary>
+            Increases the indentation of the current text selection.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.DecreaseCaretIndent">
+            <summary>
+            Decreases the indentation at the current caret position.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.IncreaseCaretIndent">
+            <summary>
+            Icreases the indentation at the current caret position.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.OnTargetChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Triggered when the target textbox changes. Detaches from any old 
+            textbox and attaches events on the new instance.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.TargetTextChanged(System.Object,System.Windows.Controls.TextChangedEventArgs)">
+            <summary>
+            Invalidates the control on TextChanged, allowing syntax highlighting 
+            to execute.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:UI.SyntaxBox.SyntaxRenderer.TargetPreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
+            <summary>
+            Handles keyboard input like tab indent expansion.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:UI.SyntaxBox.Text">
+            <summary>
+            Extension methods dealing with text.
+            </summary>
+        </member>
+        <member name="M:UI.SyntaxBox.Text.GetLineAtPosition(System.String,System.Int32)">
+            <summary>
+            Gets a TextLine representing the line at a specific char position 
+            in Text.
+            </summary>
+            <param name="Text">The text to inspect.</param>
+            <param name="Position"></param>
+            <returns>A TextLine or null.</returns>
+        </member>
+        <member name="M:UI.SyntaxBox.Text.GetLines(System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Parses the text returning a chunk of lines as TextLines starting at
+            First line and ending on Last line or at the end of the text.
+            This can be done using built-in TextBox functions, but this is >5x faster.
+            </summary>
+            <param name="Text">The text to parse.</param>
+            <param name="First">The first line to include in the chunk.</param>
+            <param name="Last">The last line to include in the chunk.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.Text.GetLines2(System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Parses the text returning a chunk of lines as TextLines starting at
+            First line and ending on Last line or at the end of the text.
+            This is the same as GetLines, but uses the Aho-Corasick algorithm,
+            which makes it a bit slower.
+            </summary>
+            <param name="Text">The text to parse.</param>
+            <param name="First">The first line to include in the chunk.</param>
+            <param name="Last">The last line to include in the chunk.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.Text.IsStartWordBoundary(System.String,System.Int32)">
+            <summary>
+            Determines if the Position in Text is is on a start-of-word-boundary,
+            i.e. that the position is at the beginning of the string or that 
+            the prefix character is a non-word character. It assumes the position is
+            already on a word character.
+            </summary>
+            <param name="Text">The text to inspect</param>
+            <param name="Position">The a position in Text pointing at a word character.</param>
+            <returns></returns>
+        </member>
+        <member name="M:UI.SyntaxBox.Text.IsEndWordBoundary(System.String,System.Int32)">
+            <summary>
+            Determines if the Position in Text is is on a start-of-word-boundary,
+            i.e. that the position is at the end of the string or that 
+            the postfix character is a non-word character. It assumes the position is
+            already on a word character.
+            </summary>
+            <param name="Text">The text to inspect</param>
+            <param name="Position">The a position in Text pointing at a word character.</param>
+            <returns></returns>
+        </member>
+        <member name="F:UI.SyntaxBox.TextLine.StartIndex">
+            <summary>
+            The start index of the line relative to the entire text.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -7,9 +7,10 @@
         xmlns:local="clr-namespace:UI.SyntaxBox.Demo"
         mc:Ignorable="d"
         Title="C# Editor" Height="450" Width="800">
-    <Grid Background="LightGray" >
-        <DockPanel >
-            <Button Click="Button_Click" Content="Toggle" DockPanel.Dock="Bottom"/>
+    <Grid Background="LightGray">
+        <DockPanel>
+            <Button Click="btnSyntax" Content="Toggle Syntax" DockPanel.Dock="Bottom"/>
+            <Button Click="btnWrap_Click" Content="Toggle Wrapping" DockPanel.Dock="Bottom"/>
             <TextBox 
                 x:Name="textBox"
                 syntax:SyntaxBox.Enable="True"
@@ -23,7 +24,7 @@
                 AcceptsTab="True"
                 VerticalScrollBarVisibility="Auto"
                 HorizontalScrollBarVisibility="Auto"
-                Padding="0,0,0,0"
+                Padding="0"
                 FontFamily="Consolas"
                 FontSize="11pt">
                 <syntax:SyntaxBox.SyntaxDrivers>
@@ -86,7 +87,6 @@
                     <syntax:KeySequenceBinding Gesture="Ctrl+K,U" Command="local:Commands.UncommentCommand" />
                 </TextBox.InputBindings>
             </TextBox>
-
         </DockPanel>
     </Grid>
 </Window>

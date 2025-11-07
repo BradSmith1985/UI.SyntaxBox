@@ -158,7 +158,7 @@ namespace UI.SyntaxBox.Tests
                 Pattern = @"\babstract\b|\bas\b|\bbase\b|\bbool\b|\bbreak\b|\bbyte\b|\bcase\b|\bcatch\b|\bchar\b|\bchecked\b|\bclass\b|\bconst\b|\bcontinue\b|\bdecimal\b|\bdefault\b|\bdelegate\b|\bdo\b|\bdouble\b|\belse\b|\benum\b|\bevent\b|\bexplicit\b|\bextern\b|\bfalse\b|\bfinally\b|\bfixed\b|\bfloat\b|\bfor\b|\bforeach\b|\bgoto\b|\bif\b|\bimplicit\b|\bin\b|\bint\b|\binterface\b|\binternal\b|\bis\b|\block\b|\blong\b|\bnamespace\b|\bnew\b|\bnull\b|\bobject\b|\boperator\b|\bout\b|\boverride\b|\bparams\b|\bprivate\b|\bprotected\b|\bpublic\b|\breadonly\b|\bref\b|\breturn\b|\bsbyte\b|\bsealed\b|\bshort\b|\bsizeof\b|\bstackalloc\b|\bstatic\b|\bstring\b|\bstruct\b|\bswitch\b|\bthis\b|\bthrow\b|\btrue\b|\btry\b|\btypeof\b|\buint\b|\bulong\b|\bunchecked\b|\bunsafe\b|\bushort\b|\busing\b|\busing\b|\bstatic\b|\bvirtual\b|\bvoid\b|\bvolatile\b|\bwhile\b|\bget\b|\bset\b|\byield\b|\bvar\b"
             };
 
-            string file = Path.Combine(Environment.CurrentDirectory, @"..\..\..\UI.SyntaxBox\SyntaxRenderer.cs");
+            string file = Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\UI.SyntaxBox\SyntaxRenderer.cs");
             var input = File.ReadAllLines(file);
 
             var regex = input
@@ -192,7 +192,7 @@ namespace UI.SyntaxBox.Tests
             regexRule.Match("empty"); // Warm it up
 
             int iter = 10;
-            string file = Path.Combine(Environment.CurrentDirectory, @"..\..\..\UI.SyntaxBox\SyntaxRenderer.cs");
+            string file = Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\UI.SyntaxBox\SyntaxRenderer.cs");
             var input = File.ReadAllLines(file);
 
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();

@@ -4,25 +4,37 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 
-namespace UI.SyntaxBox.Demo
-{
+namespace UI.SyntaxBox.Demo {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
+    public partial class MainWindow : Window {
+
         const string LINE_COMMENT = "//";
 
-        public MainWindow()
-        {
+        private bool _wrapLines;
+
+        public MainWindow() {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            bool value = (bool)this.textBox.GetValue(SyntaxBox.EnabledProperty);
+        private void btnSyntax(object sender, RoutedEventArgs e) {
+            bool value = (bool)this.textBox.GetValue(SyntaxBox.EnableProperty);
 
-            this.textBox.SetValue(SyntaxBox.EnabledProperty, !value);
+            this.textBox.SetValue(SyntaxBox.EnableProperty, !value);
+        }
+
+        private void btnWrap_Click(object sender, RoutedEventArgs e) {
+            _wrapLines = !_wrapLines;
+
+            if (_wrapLines) {
+                this.textBox.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Disabled;
+                this.textBox.TextWrapping = TextWrapping.Wrap;
+            }
+            else {
+                this.textBox.HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto;
+                this.textBox.TextWrapping = TextWrapping.NoWrap;
+            }
         }
 
         #region Private members
@@ -33,12 +45,9 @@ namespace UI.SyntaxBox.Demo
         /// </summary>
         /// <param name="Line"></param>
         /// <returns></returns>
-        private static int FindLineStart(TextLine Line)
-        {
-            for (int i = 0; i < Line.Text.Length; i++)
-            {
-                if (!Char.IsWhiteSpace(Line.Text[i]))
-                {
+        private static int FindLineStart(TextLine Line) {
+            for (int i = 0; i < Line.Text.Length; i++) {
+                if (!Char.IsWhiteSpace(Line.Text[i])) {
                     return (i);
                 }
             }
@@ -57,8 +66,7 @@ namespace UI.SyntaxBox.Demo
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        public void OnCommentCommand(object sender, ExecutedRoutedEventArgs args)
-        {
+        public void OnCommentCommand(object sender, ExecutedRoutedEventArgs args) {
             int
                 selStart = this.textBox.SelectionStart,
                 selLength = this.textBox.SelectionLength,
@@ -85,8 +93,8 @@ namespace UI.SyntaxBox.Demo
 
             // Increase indent for the affected block.
             var indentedBlock = String.Join("", affectedLines
-                .Select((line) => line.Text.Substring(0, insPos) 
-                    + LINE_COMMENT 
+                .Select((line) => line.Text.Substring(0, insPos)
+                    + LINE_COMMENT
                     + line.Text.Substring(insPos))
                 .ToArray());
 
@@ -111,8 +119,7 @@ namespace UI.SyntaxBox.Demo
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        public void OnUncommentCommand(object sender, ExecutedRoutedEventArgs args)
-        {
+        public void OnUncommentCommand(object sender, ExecutedRoutedEventArgs args) {
             int
                 selStart = this.textBox.SelectionStart,
                 selLength = this.textBox.SelectionLength,
@@ -132,11 +139,9 @@ namespace UI.SyntaxBox.Demo
 
             // Remove any comment prefix for the affected block.
             var unindentedBlock = String.Join("", affectedLines
-                .Select((line) =>
-                {
+                .Select((line) => {
                     int start = FindLineStart(line);
-                    if (line.Text.Substring(start).StartsWith(LINE_COMMENT))
-                    {
+                    if (line.Text.Substring(start).StartsWith(LINE_COMMENT)) {
                         return (line.Text.Substring(0, start)
                             + line.Text.Substring(start + LINE_COMMENT.Length));
                     }
@@ -162,6 +167,6 @@ namespace UI.SyntaxBox.Demo
             this.textBox.Select(selStart, selLength);
         }
         // ...................................................................
-        #endregion
+        #endregion        
     }
 }

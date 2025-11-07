@@ -8,7 +8,7 @@ namespace UI.SyntaxBox
     /// <summary>
     /// A formatted line of text.
     /// </summary>
-    public class FormattedLine
+    internal class FormattedLine
     {
         /// <summary>
         /// Text of the line. No strictly necessary to maintain,

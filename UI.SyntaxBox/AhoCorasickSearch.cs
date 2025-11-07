@@ -249,7 +249,7 @@ namespace UI.SyntaxBox
             // have common prefixes (if, ifthen).
             // Instead of emitting the match directly, the match is 
             // cached and emitted on the next failed match.
-            Substring prevMatch = null;
+            Substring? prevMatch = null;
 
             int current = 0;
             for (int i = 0; i < Text.Length; i++)
@@ -283,9 +283,9 @@ namespace UI.SyntaxBox
                                 {
                                     // If we have a previous match with a different starting position
                                     // than the current one, we have to emit it.
-                                    if (prevMatch != null && prevMatch.Position != substring.Position)
+                                    if (prevMatch != null && prevMatch.Value.Position != substring.Position)
                                     {
-                                        yield return prevMatch;
+                                        yield return prevMatch.Value;
                                     }
 
                                     // In case we don't want overlapping matches,
@@ -307,7 +307,7 @@ namespace UI.SyntaxBox
             // to emit.
             if (prevMatch != null)
             {
-                yield return prevMatch;
+                yield return prevMatch.Value;
                 prevMatch = null;
             }
         }

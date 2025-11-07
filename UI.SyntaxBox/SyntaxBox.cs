@@ -34,14 +34,24 @@ namespace UI.SyntaxBox
         // ...................................................................
         #endregion
 
+        /// <summary>
+        /// Forces the driver logic to be re-applied to all text in the specified <see cref="TextBox"/>.
+        /// </summary>
+        /// <param name="textBox"></param>
+        public static void InvalidateDriver(TextBox textBox) {
+            if (textBox.FindName("PART_SyntaxRenderer") is SyntaxRenderer renderer) {
+                renderer.InvalidateDriver();
+            }
+        }
+
         #region Attached properties
 
-        #region Enabled
+        #region Enable
         // ...................................................................
         /// <summary>
         /// Enables/disables syntax highlighting on any textbox
         /// </summary>
-        public static readonly DependencyProperty EnabledProperty = DependencyProperty.RegisterAttached(
+        public static readonly DependencyProperty EnableProperty = DependencyProperty.RegisterAttached(
             "Enable",
             typeof(bool),
             typeof(SyntaxBox),
@@ -56,7 +66,7 @@ namespace UI.SyntaxBox
         /// <param name="value"></param>
         public static void SetEnable(TextBox target, bool value)
         {
-            target.SetValue(EnabledProperty, value);
+            target.SetValue(EnableProperty, value);
         }
         /// <summary>
         /// Enable property get accessor.
@@ -65,7 +75,7 @@ namespace UI.SyntaxBox
         /// <returns></returns>
         public static bool GetEnable(TextBox target)
         {
-            return (bool)target.GetValue(EnabledProperty);
+            return (bool)target.GetValue(EnableProperty);
         }
         /// <summary>
         /// Called when Enabled changes.
@@ -78,7 +88,7 @@ namespace UI.SyntaxBox
             if (((bool)e.OldValue) == false && ((bool)e.NewValue) == true)
             {
                 var brushConverter = new System.Windows.Media.BrushConverter();
-                target.SetValue(OriginalForegroundProperty, target.Foreground);
+                target.SetValue(OriginalForegroundPropertyKey, target.Foreground);
                 target.Template = _syntaxTemplate;
                 target.Foreground = System.Windows.Media.Brushes.Transparent;
                 
@@ -138,10 +148,20 @@ namespace UI.SyntaxBox
             new FrameworkPropertyMetadata(
                 System.Windows.Media.Brushes.WhiteSmoke,
                 FrameworkPropertyMetadataOptions.AffectsRender));
+        /// <summary>
+        /// LineNumbersBackground property set accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
         public static void SetLineNumbersBackground(TextBox target, System.Windows.Media.Brush value)
         {
             target.SetValue(LineNumbersBackgroundProperty, value);
         }
+        /// <summary>
+        /// LineNumbersBackground property get accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static System.Windows.Media.Brush GetLineNumbersBackground(TextBox target)
         {
             return (System.Windows.Media.Brush)target.GetValue(LineNumbersBackgroundProperty);
@@ -161,10 +181,20 @@ namespace UI.SyntaxBox
             new FrameworkPropertyMetadata(
                 System.Windows.Media.Brushes.SlateGray,
                 FrameworkPropertyMetadataOptions.AffectsRender));
+        /// <summary>
+        /// LineNumbersForeground property set accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
         public static void SetLineNumbersForeground(TextBox target, System.Windows.Media.Brush value)
         {
             target.SetValue(LineNumbersForegroundProperty, value);
         }
+        /// <summary>
+        /// LineNumbersForeground property get accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static System.Windows.Media.Brush GetLineNumbersForeground(TextBox target)
         {
             return (System.Windows.Media.Brush)target.GetValue(LineNumbersForegroundProperty);
@@ -174,16 +204,30 @@ namespace UI.SyntaxBox
 
         #region OriginalForeground
         // ...................................................................
-        public static readonly DependencyProperty OriginalForegroundProperty = DependencyProperty.RegisterAttached(
+        private static readonly DependencyPropertyKey OriginalForegroundPropertyKey = DependencyProperty.RegisterAttachedReadOnly(
             "OriginalForeground",
             typeof(System.Windows.Media.Brush),
             typeof(SyntaxBox),
             new FrameworkPropertyMetadata(System.Windows.Media.Brushes.Black));
-        public static void OriginalForeground(TextBox target, System.Windows.Media.Brush value)
+        /// <summary>
+        /// The original foreground of the text box (set to transparent when syntax highlighting is enabled).
+        /// </summary>
+        public static readonly DependencyProperty OriginalForegroundProperty = OriginalForegroundPropertyKey.DependencyProperty;
+        /// <summary>
+        /// OriginalForeground property set accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
+        internal static void SetOriginalForeground(TextBox target, System.Windows.Media.Brush value)
         {
-            target.SetValue(OriginalForegroundProperty, value);
+            target.SetValue(OriginalForegroundPropertyKey, value);
         }
-        public static System.Windows.Media.Brush OriginalForeground(TextBox target)
+        /// <summary>
+        /// OriginalForeground property get accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static System.Windows.Media.Brush GetOriginalForeground(TextBox target)
         {
             return (System.Windows.Media.Brush)target.GetValue(OriginalForegroundProperty);
         }
@@ -192,6 +236,9 @@ namespace UI.SyntaxBox
 
         #region SyntaxDriver
         // ...................................................................
+        /// <summary>
+        /// Singular syntax driver.
+        /// </summary>
         public static readonly DependencyProperty SyntaxDriverProperty = DependencyProperty.RegisterAttached(
             "SyntaxDriver",
             typeof(ISyntaxDriver),
@@ -199,21 +246,36 @@ namespace UI.SyntaxBox
             new FrameworkPropertyMetadata(
                 null,
                 FrameworkPropertyMetadataOptions.AffectsRender));
+        /// <summary>
+        /// SyntaxDriver property get accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="value"></param>
         public static void SetSyntaxDriver(TextBox target, ISyntaxDriver value)
         {
             target.SetValue(SyntaxDriverProperty, value);
         }
+        /// <summary>
+        /// SyntaxDriver property get accessor
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static ISyntaxDriver GetSyntaxDriver(TextBox target)
         {
             return (ISyntaxDriver)target.GetValue(SyntaxDriverProperty);
         }
         // ...................................................................
         static readonly DependencyProperty SyntaxDriversProperty = DependencyProperty.RegisterAttached(
-            // Name not matching the getter forces the actual getter top be used
+            // Name not matching the getter forces the actual getter to be used
             // and not optimized away.
             "SyntaxDrivers_",
             typeof(SyntaxDriverCollection),
             typeof(SyntaxBox));
+        /// <summary>
+        /// SyntaxDrivers property get accessor
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <returns></returns>
         public static SyntaxDriverCollection GetSyntaxDrivers(TextBox Target)
         {
             var collection = Target.GetValue(SyntaxDriversProperty) as SyntaxDriverCollection;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Media;
 
 namespace UI.SyntaxBox
@@ -16,8 +17,10 @@ namespace UI.SyntaxBox
 
         #region ISyntaxRule members
         // ...................................................................
+        /// <inheritdoc />
         public int RuleId { get; set; }
         // ...................................................................
+        /// <inheritdoc />
         public DriverOperation Op { get; set; } = DriverOperation.Line;
         // ...................................................................
         /// <summary>
@@ -31,16 +34,15 @@ namespace UI.SyntaxBox
             var engine = this.GetEngine();
             var matched = engine.FindAll(Text).ToList();
             var instructions = matched
-                .Select((x) => new FormatInstruction
-                {
-                    FromChar = x.Position,
-                    Length = x.Length,
-
-                    RuleId = this.RuleId,
-                    Foreground = this.Foreground,
-                    Background = this.Background,
-                    Outline = this.Outline
-                }).ToList();
+                .Select((x) => new FormatInstruction(
+                    this.RuleId,
+                    x.Position,
+                    x.Length,
+                    this.Background,
+                    this.Foreground,
+                    this.Outline,
+                    this.TextDecorations
+                )).ToList();
             return (instructions);
                 
         }
@@ -63,9 +65,22 @@ namespace UI.SyntaxBox
         /// Outline pen
         /// </summary>
         public Pen Outline { get; set; }
+        /// <summary>
+        /// Decorations
+        /// </summary>
+        public TextDecorationCollection TextDecorations { get; set; }
         // ...................................................................
+        /// <summary>
+        /// Comma-separated list of keywords to match.
+        /// </summary>
         public string Keywords { get; set; }
         // ...................................................................
+        /// <summary>
+        /// Whether to match whole words only.
+        /// </summary>
+        /// <remarks>
+        /// The default is <see langword="true"/>.
+        /// </remarks>
         public bool WholeWordsOnly { get; set; } = true;
         // ...................................................................
         #endregion

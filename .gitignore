@@ -7,3 +7,7 @@ Debug
 /.vs/UI.SyntaxBox/v16/TestStore/0/000.testlog
 /.vs/UI.SyntaxBox/v16/Server/sqlite3/storage.ide
 /.vs/UI.SyntaxBox/v16/Server/sqlite3/db.lock
+/UI.SyntaxBox/bin
+/UI.SyntaxBox/obj
+/.vs/UI.SyntaxBox
+/UI.SyntaxBox.Demo/obj
